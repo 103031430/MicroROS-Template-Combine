@@ -6,8 +6,8 @@
 #include <rclc/rclc.h>
 #include <rclc/executor.h>
 #include <std_msgs/msg/int32.h>
-#include <int_publisher.h>
-#include <int_subscriber.h>
+#include "genPublisher.h"
+
 
 
 // Define W5500 Ethernet Chip Pins
@@ -28,13 +28,9 @@ rclc_executor_t executor;
 rcl_node_t node;
 const char * node_name = "node1";
 
-//Define specific ROS entities
-int_publisher publisher1;
-int_publisher publisher2;
-
-int_subscriber subscriber1;
-int_subscriber subscriber2;
-
+genPublisher pub_bool;
+genPublisher pub_int;
+genPublisher pub_double;
 
 
 // Define Functions
@@ -79,11 +75,11 @@ void setup() {
   SetupSupport();
   initNode(&node,node_name);
   initExecutor();
-  publisher1.init(&node, "topicA");
-  publisher2.init(&node, "topicB");
 
-  subscriber1.init(&node, "topicC", &executor);
-  subscriber2.init(&node, "topicD", &executor);
+  pub_int.init(&node, "Int32Topic", INT32);
+  pub_bool.init(&node, "BoolTopic", BOOL);
+  pub_double.init(&node, "DoubleTopic", DOUBLE);
+
 }
 
 
@@ -94,8 +90,13 @@ void loop() {
     delay(100);
     rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
   }
-  publisher1.publish(60);
-  publisher2.publish(120);
+
+  delay(1000);
+  
+  pub_int.publish(69);
+  pub_bool.publish(true);
+  pub_double.publish(0.69);
+
 }
 
 
