@@ -6,6 +6,7 @@ genPublisher::genPublisher(){}
 
 
 void genPublisher::init(rcl_node_t * node, const char * topic, DataType datatype){
+    this->topic_name = topic;
     switch (datatype) {
         case DataType::BOOL:
             
@@ -13,7 +14,7 @@ void genPublisher::init(rcl_node_t * node, const char * topic, DataType datatype
                 &publisher,
                 node,
                 ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Bool),
-                topic
+                topic_name
             );
 
         break;
@@ -24,20 +25,19 @@ void genPublisher::init(rcl_node_t * node, const char * topic, DataType datatype
                 &publisher,
                 node,
                 ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
-                topic
+                topic_name
             );
 
             
         break;
 
         case DataType::DOUBLE:
-            std_msgs__msg__Float64 msg;
 
             rclc_publisher_init_default(
                 &publisher,
                 node,
                 ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Float64),
-                topic
+                topic_name
             );
             break;
 
