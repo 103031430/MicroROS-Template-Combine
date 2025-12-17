@@ -28,9 +28,18 @@ rclc_executor_t executor;
 rcl_node_t node;
 const char * node_name = "node1";
 
-genPublisher pub_bool;
-genPublisher pub_int;
-genPublisher pub_double;
+genPublisher pub_bool1;
+genPublisher pub_bool2;
+
+genPublisher pub_int1;
+genPublisher pub_int2;
+genPublisher pub_int3;
+
+genPublisher pub_double1;
+genPublisher pub_double2;
+genPublisher pub_double3;
+
+genPublisher err_check;
 
 
 // Define Functions
@@ -47,12 +56,23 @@ void initExecutor();
 
 
 // Network Configuration
-byte esp_mac[] = { 0xDE, 0xAD, 0xAF, 0x91, 0x3E, 0xD7 };    // Mac address of ESP32
-IPAddress esp_ip(192, 168, 0, 11);                         // IP address of ESP32
+byte esp_mac[] = { 0xDE, 0xAD, 0xAF, 0x91, 0x3E, 0x69 };    // Mac address of ESP32
+IPAddress esp_ip(192, 168, 0, 14);                         // IP address of ESP32
 IPAddress dns(192, 168, 0, 1);                              // DNS Server (Modify if necessary)
 IPAddress gateway(192, 168, 0, 1);                          // Default Gateway (Modify if necessary)
 IPAddress agent_ip(192, 168, 0, 80);                        // IP address of Micro ROS agent        
 size_t agent_port = 8888;                                   // Micro ROS Agent Port Number
+
+int value0;
+int value1 = 0;
+int value2;
+
+bool boolswitch;
+bool value3 = true;
+
+double value4 = 0.69;
+double value5 = 0;
+double value6;
 
 void setup() {
 
@@ -76,9 +96,18 @@ void setup() {
   initNode(&node,node_name);
   initExecutor();
 
-  pub_int.init(&node, "Int32Topic", INT32);
-  pub_bool.init(&node, "BoolTopic", BOOL);
-  pub_double.init(&node, "DoubleTopic", DOUBLE);
+  // pub_int1.init(&node, "Int32Stat", INT);
+  // pub_int2.init(&node, "Int32Count", INT);
+  // pub_int3.init(&node, "Int32Alt", INT);
+
+  // pub_bool1.init(&node, "BoolStat", BOOL);
+  // pub_bool2.init(&node, "BoolAlt", BOOL);
+
+  // pub_double1.init(&node, "DoubleStat", DOUBLE);
+  // pub_double2.init(&node, "DoubleCount", DOUBLE);
+  // pub_double3.init(&node, "DoubleAlt", DOUBLE);
+
+  err_check.init(&node, "ErrTest", DOUBLE);
 
 }
 
@@ -86,28 +115,59 @@ void setup() {
 
 void loop() {
   Serial.println("heartbeat");
-  for(int a = 0; a<10;a++){
-    delay(100);
-    rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
-  }
 
   delay(1000);
   
-  pub_int.publish(69);
-  pub_bool.publish(true);
-  pub_double.publish(0.69);
+  // Publishing static integer values
+  pub_int1.publish(69);
+
+  // Publishing integer values counting up
+  pub_int2.publish(value1);
+
+  value1++;
+
+  // Publishing alternating integer values
+  value2 = 10;
+  pub_int3.publish(value2);
+
+  delay(1000);
+
+  value2 = 20;
+  pub_int3.publish(value2);
+
+  // Publishing Static Boolean values
+  pub_bool1.publish(value3);
+
+  // Publishing Alternating Boolean values
+  boolswitch = true;
+  pub_bool2.publish(boolswitch);
+
+  delay(1000);
+
+  boolswitch = false;
+  pub_bool2.publish(boolswitch);
+
+  // Publishing Static Double values
+  pub_double1.publish(value4);
+
+  // Publishing Double values counting up
+  pub_double2.publish(value5);
+
+  value5 += 0.1;
+
+  // Publishing Alternating Double values
+  value6 = 0.2;
+  pub_double3.publish(value6);
+
+  delay(1000);
+
+  value6 = 0.4;
+  pub_double3.publish(value6);
+
+  rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
 
 }
 
-
-
-// Error handle loop
-void error_loop() {
-  while(1) {
-    delay(1000);
-    Serial.println("error loop :(");
-  }
-}
 void SetupSupport(){
   allocator = rcl_get_default_allocator();
   RCCHECK(rclc_support_init(&support, 0, NULL, &allocator));

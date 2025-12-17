@@ -2,7 +2,7 @@
 #define DATATYPE_H
 
 enum DataType {
-    INT32,
+    INT,
     DOUBLE,
     BOOL
 };
