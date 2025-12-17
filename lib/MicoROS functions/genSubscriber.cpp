@@ -3,7 +3,7 @@
 
 genSubscriber::genSubscriber(){}
 
-void genSubscriber::init(rcl_node_t * node, const char * topic, rclc_executor_t * executor, DataType datatype){
+void genSubscriber::init(rcl_node_t * node, const char * topic, rclc_executor_t * executor, rclc_subscription_callback_t callback, DataType datatype){
     this->topic_name = topic;
     this->datatype = datatype;
 
@@ -16,7 +16,7 @@ void genSubscriber::init(rcl_node_t * node, const char * topic, rclc_executor_t 
                 topic_name
             );
 
-            rclc_executor_add_subscription(executor, &subscriber, &msg.intmsg, &Int32Callback, ON_NEW_DATA);
+            rclc_executor_add_subscription(executor, &subscriber, &msg.intmsg, callback, ON_NEW_DATA);
 
         break;
 
@@ -28,7 +28,7 @@ void genSubscriber::init(rcl_node_t * node, const char * topic, rclc_executor_t 
                 topic_name
             );
 
-            rclc_executor_add_subscription(executor, &subscriber, &msg.doublemsg, &DoubleCallback, ON_NEW_DATA);
+            rclc_executor_add_subscription(executor, &subscriber, &msg.doublemsg, callback, ON_NEW_DATA);
 
         break;
 
@@ -40,7 +40,7 @@ void genSubscriber::init(rcl_node_t * node, const char * topic, rclc_executor_t 
                 topic_name
             );
 
-            rclc_executor_add_subscription(executor, &subscriber, &msg.boolmsg, &BooleanCallback, ON_NEW_DATA);
+            rclc_executor_add_subscription(executor, &subscriber, &msg.boolmsg, callback, ON_NEW_DATA);
 
         break;
 
@@ -52,29 +52,4 @@ void genSubscriber::init(rcl_node_t * node, const char * topic, rclc_executor_t 
 
     
 }
-
-void genSubscriber::Int32Callback(const void * msgin)
-{
-  // Cast received message to used type
-  const std_msgs__msg__Int32 * msg_int = (const std_msgs__msg__Int32 *)msgin;
-  Serial.print("Integer value: ");
-  Serial.println(msg_int->data);
-}
-
-void genSubscriber::BooleanCallback(const void * msgin)
-{
-  // Cast received message to used type
-  const std_msgs__msg__Bool * msg_bool = (const std_msgs__msg__Bool *)msgin;
-  Serial.print("Boolean value: ");
-  Serial.println(msg_bool->data);
-}
-
-void genSubscriber::DoubleCallback(const void * msgin)
-{
-  // Cast received message to used type
-  const std_msgs__msg__Float64 * msg_double = (const std_msgs__msg__Float64 *)msgin;
-  Serial.print("Double value: ");
-  Serial.println(msg_double->data);
-}
-
 

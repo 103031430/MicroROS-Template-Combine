@@ -16,16 +16,15 @@
 class genSubscriber{
 public:
     genSubscriber();
-    void init(rcl_node_t * node, const char * topic, rclc_executor_t * executor, DataType datatype);
+    void init(rcl_node_t * node, const char * topic, rclc_executor_t * executor, rclc_subscription_callback_t callback, DataType datatype);
     
 private:
     rcl_subscription_t subscriber;
     const char * topic_name;
     DataType datatype;
     DataMsg msg;
-    static void Int32Callback(const void * msgin);
-    static void BooleanCallback(const void * msgin);
-    static void DoubleCallback(const void * msgin);
+    typedef rclc_subscription_callback_t callback;
+
 };
 
 #endif // INT_SUBSCRIBER_H
