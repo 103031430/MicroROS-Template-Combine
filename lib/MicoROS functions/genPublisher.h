@@ -17,6 +17,7 @@ public:
 
     genPublisher();
     void init(rcl_node_t * node, const char * topic, DataType datatype);
+    // void publish(const void* data);
     void publish(int data);
     void publish(bool data);
     void publish(double data);
@@ -25,6 +26,7 @@ private:
     rcl_publisher_t publisher;
     const char * topic_name;
     DataType datatype;
+    const void* data;
 
 };
 

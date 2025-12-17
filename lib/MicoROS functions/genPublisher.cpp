@@ -54,6 +54,39 @@ void genPublisher::init(rcl_node_t * node, const char * topic, DataType datatype
     }
 };
 
+
+// void genPublisher::publish(const void* data) {
+//     switch (datatype) {
+//         case DataType::INT:
+//             std_msgs__msg__Int32 msg_int;
+//             msg_int.data = *static_cast<const int*>(data);
+//             RCCHECK(rcl_publish(&publisher, &msg_int, NULL));
+//         break;
+        
+//         case DataType::BOOL: 
+//             std_msgs__msg__Bool msg_bool;
+//             msg_bool.data = *static_cast<const bool*>(data);
+//             RCCHECK(rcl_publish(&publisher, &msg_bool, NULL));
+//         break;
+        
+//         case DataType::DOUBLE:
+//             std_msgs__msg__Float64 msg_doub;
+//             msg_doub.data = *static_cast<const double*>(data);
+//             RCCHECK(rcl_publish(&publisher, &msg_doub, NULL));
+//         break;
+        
+//     }
+// }
+
+// Error handle loop
+void error_loop() {
+  while(1) {
+    delay(1000);
+    Serial.println("error loop :(");
+    }
+};
+
+
 void genPublisher::publish(int data) {
     std_msgs__msg__Int32 msg_int;
     msg_int.data = data;  // Assign to the message
@@ -74,13 +107,3 @@ void genPublisher::publish(double data) {
     RCCHECK(rcl_publish(&publisher, &msg_doub, NULL));
 
 }
-
-// Error handle loop
-void error_loop() {
-  while(1) {
-    delay(1000);
-    Serial.println("error loop :(");
-    }
-};
-
-

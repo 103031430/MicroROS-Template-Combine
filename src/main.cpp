@@ -7,7 +7,7 @@
 #include <rclc/executor.h>
 #include <std_msgs/msg/int32.h>
 #include "genPublisher.h"
-
+#include "genSubscriber.h"
 
 
 // Define W5500 Ethernet Chip Pins
@@ -41,6 +41,13 @@ genPublisher pub_double3;
 
 genPublisher err_check;
 
+genSubscriber sub_int1;
+genSubscriber sub_bool1;
+genSubscriber sub_doub1;
+
+int int_val = 32;
+bool bool_val = 32;
+double doub_val = 32;
 
 // Define Functions
 void error_loop();
@@ -50,6 +57,10 @@ void SetupSupport();
 void initNode(rcl_node_t * node, const char * node_name);
 //inititates executor      
 void initExecutor();
+
+void SubscriptionCallback1(const void * msgin);
+void SubscriptionCallback2(const void * msgin);
+void SubscriptionCallback3(const void * msgin);
 
 #define RCCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){error_loop();}}     // Checks for Errors in Micro ROS Setup
 #define RCSOFTCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){}}              // 
@@ -107,10 +118,39 @@ void setup() {
   // pub_double2.init(&node, "DoubleCount", DOUBLE);
   // pub_double3.init(&node, "DoubleAlt", DOUBLE);
 
-  err_check.init(&node, "ErrTest", DOUBLE);
+  // err_check.init(&node, "ErrTest", DOUBLE);
 
+
+  sub_int1.init(&node, "Int32Sub", &executor, INT);
+  sub_bool1.init(&node, "BoolSub", &executor, BOOL);
+  sub_doub1.init(&node, "DoubleSub", &executor, DOUBLE);
+
+  // sub_int1.init(&node, "Int32Sub", &executor, &SubscriptionCallback1, INT);
+  // sub_bool1.init(&node, "BoolSub", &executor, &SubscriptionCallback2, BOOL);
+  // sub_doub1.init(&node, "DoubleSub", &executor, &SubscriptionCallback3, DOUBLE);
 }
 
+void SubscriptionCallback1(const void * msgin)
+{
+  // Cast received message to used type
+  const std_msgs__msg__Int32 * msg = (const std_msgs__msg__Int32 *)msgin;
+  Serial.println(msg->data);
+  Serial.println("callback1");
+}
+void SubscriptionCallback2(const void * msgin)
+{
+  // Cast received message to used type
+  const std_msgs__msg__Int32 * msg = (const std_msgs__msg__Int32 *)msgin;
+  Serial.println(msg->data);
+  Serial.println("callback2");
+}
+void SubscriptionCallback3(const void * msgin)
+{
+  // Cast received message to used type
+  const std_msgs__msg__Int32 * msg = (const std_msgs__msg__Int32 *)msgin;
+  Serial.println(msg->data);
+  Serial.println("callback3");
+}
 
 
 void loop() {
@@ -118,51 +158,54 @@ void loop() {
 
   delay(1000);
   
-  // Publishing static integer values
-  pub_int1.publish(69);
+  // // Publishing static integer values
+  // pub_int1.publish(69);
 
-  // Publishing integer values counting up
-  pub_int2.publish(value1);
+  // // Publishing integer values counting up
+  // pub_int2.publish(&value1);
 
-  value1++;
+  // value1++;
 
-  // Publishing alternating integer values
-  value2 = 10;
-  pub_int3.publish(value2);
+  // // Publishing alternating integer values
+  // value2 = 10;
+  // pub_int3.publish(&value2);
 
-  delay(1000);
+  // delay(1000);
 
-  value2 = 20;
-  pub_int3.publish(value2);
+  // value2 = 20;
+  // pub_int3.publish(&value2);
 
-  // Publishing Static Boolean values
-  pub_bool1.publish(value3);
+  // // Publishing Static Boolean values
+  // pub_bool1.publish(&value3);
 
-  // Publishing Alternating Boolean values
-  boolswitch = true;
-  pub_bool2.publish(boolswitch);
+  // // Publishing Alternating Boolean values
+  // boolswitch = true;
+  // pub_bool2.publish(&boolswitch);
 
-  delay(1000);
+  // delay(1000);
 
-  boolswitch = false;
-  pub_bool2.publish(boolswitch);
+  // boolswitch = false;
+  // pub_bool2.publish(boolswitch);
 
-  // Publishing Static Double values
-  pub_double1.publish(value4);
+  // // Publishing Static Double values
+  // pub_double1.publish(value4);
 
-  // Publishing Double values counting up
-  pub_double2.publish(value5);
+  // // Publishing Double values counting up
+  // pub_double2.publish(value5);
 
-  value5 += 0.1;
+  // value5 += 0.1;
 
-  // Publishing Alternating Double values
-  value6 = 0.2;
-  pub_double3.publish(value6);
+  // // Publishing Alternating Double values
+  // value6 = 0.2;
+  // pub_double3.publish(value6);
 
-  delay(1000);
+  // delay(1000);
 
-  value6 = 0.4;
-  pub_double3.publish(value6);
+  // value6 = 0.4;
+  // pub_double3.publish(value6);
+
+
+  
 
   rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
 
